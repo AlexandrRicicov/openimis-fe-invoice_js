@@ -44,14 +44,9 @@ export const CONTAINS_LOOKUP = "Icontains";
 export const STARTS_WITH_LOOKUP = "Istartswith";
 export const ENUM_PREFIX_LENGTH = 2;
 export const STATUS = {
-  DRAFT: "0",
-  VALIDATED: "1",
   PAID: "2",
   CANCELLED: "3",
-  DELETED: "4",
-  SUSPENDED: "5",
   UNPAID: "6",
-  RECONCILIATED: "7",
 };
 export const SUBJECT_TYPE_OPTIONS = [
   {
