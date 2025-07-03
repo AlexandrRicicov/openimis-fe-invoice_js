@@ -38,6 +38,7 @@ export const ACTION_TYPE = {
   SEARCH_DETAIL_PAYMENT_INVOICE: "PAYMENTINVOICE__DETAIL_PAYMENT_INVOICE",
   CREATE_PAYMENT_INVOICE_WITH_DETAIL: "PAYMENTINVOICE_CREATE_PAYMENT_INVOICE_WITH_DETAIL",
   DELETE_PAYMENT_INVOICE: "PAYMENTINVOICE_DELETE_PAYMENT_INVOICE",
+  CREATE_MONTH_BILL: "INVOICE_CREATE_MONTH_BILL",
 };
 
 function reducer(
@@ -83,7 +84,7 @@ function reducer(
     errorBill: null,
     fetchedBill: false,
     bill: null,
-    
+
     fetchingBillLineItems: false,
     errorBillLineItems: null,
     fetchedBillLineItems: false,
@@ -303,16 +304,16 @@ function reducer(
         errorBills: formatServerError(action.payload),
       };
     case REQUEST(ACTION_TYPE.BILL_EXPORT):
-        return {
-          ...state,
-          fetchingBillsExport: true,
-          fetchedBillsExport: false,
-          billsExport: null,
-          billsExportPageInfo: {},
-          errorBillsExport: null,
-        };
+      return {
+        ...state,
+        fetchingBillsExport: true,
+        fetchedBillsExport: false,
+        billsExport: null,
+        billsExportPageInfo: {},
+        errorBillsExport: null,
+      };
     case SUCCESS(ACTION_TYPE.BILL_EXPORT):
-    return {
+      return {
         ...state,
         fetchingBillsExport: false,
         fetchedBillsExport: true,
@@ -442,7 +443,7 @@ function reducer(
         fetchingBillEvents: false,
         errorBillEvents: formatServerError(action.payload),
       };
-    
+
     case REQUEST(ACTION_TYPE.SEARCH_PAYMENT_INVOICE):
       return {
         ...state,
@@ -533,6 +534,8 @@ function reducer(
       return dispatchMutationResp(state, "createPaymentWithDetailInvoice", action);
     case SUCCESS(ACTION_TYPE.DELETE_PAYMENT_INVOICE):
       return dispatchMutationResp(state, "deletePaymentInvoice", action);
+    case SUCCESS(ACTION_TYPE.CREATE_MONTH_BILL):
+      return dispatchMutationResp(state, "createMonthBill", action);
     default:
       return state;
   }

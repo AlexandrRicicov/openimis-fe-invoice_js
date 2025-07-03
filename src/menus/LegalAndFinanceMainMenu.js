@@ -1,7 +1,7 @@
 import React from "react";
 import { injectIntl } from "react-intl";
 import { connect } from "react-redux";
-import { DoubleArrow } from "@material-ui/icons";
+import { DoubleArrow, Assessment } from "@material-ui/icons";
 import { formatMessage, MainMenuContribution, withModulesManager } from "@openimis/fe-core";
 import {
   LEGAL_AND_FINANCE_MAIN_MENU_CONTRIBUTION_KEY,
@@ -25,8 +25,8 @@ const LegalAndFinanceMainMenu = (props) => {
 
   const entries = [];
 
-  if (isWorker) {
-    if (rights.includes(RIGHT_BILL_SEARCH || RIGHT_BILL_AMEND)) {
+  if (isWorker === true) {
+    if (rights.includes(RIGHT_BILL_SEARCH) || rights.includes(RIGHT_BILL_AMEND)) {
       entries.push({
         text: formatMessage(intl, "invoice", "menu.bills"),
         icon: <DoubleArrowFlipped />,
@@ -35,11 +35,23 @@ const LegalAndFinanceMainMenu = (props) => {
       });
     }
 
+    // Добавляем наш новый пункт меню "Genereaza factura" для worker-ов тоже
+    const hasGenerateRights = rights.includes(RIGHT_BILL_SEARCH) || rights.includes(RIGHT_BILL_AMEND);
+
+    if (hasGenerateRights) {
+      entries.push({
+        text: formatMessage(intl, "invoice", "menu.generateInvoice"),
+        icon: <Assessment />,
+        route: "/invoices/generate-report",
+        id: "legalAndFinance.generateInvoice",
+      });
+    }
+
     if (!entries.length) return null;
 
     return (
-      <MainMenuContribution 
-        {...props} 
+      <MainMenuContribution
+        {...props}
         header={formatMessage(intl, "invoice", "mainMenu")}
         entries={entries}
         menuId='LegalAndFinanceMainMenu'
@@ -47,7 +59,7 @@ const LegalAndFinanceMainMenu = (props) => {
     );
   }
 
-  if (rights.filter((r) => r >= RIGHT_INVOICE_SEARCH && r <= RIGHT_INVOICE_AMEND).length) {
+  if (rights.includes(RIGHT_INVOICE_SEARCH) || rights.includes(RIGHT_INVOICE_AMEND)) {
     // RIGHT_SEARCH is shared by HF & HQ staff)
     entries.push({
       text: formatMessage(intl, "invoice", "menu.invoices"),
@@ -56,7 +68,8 @@ const LegalAndFinanceMainMenu = (props) => {
       id: "legalAndFinance.invoices",
     });
   }
-  if (rights.filter((r) => r >= RIGHT_BILL_SEARCH && r <= RIGHT_BILL_AMEND).length) {
+
+  if (rights.includes(RIGHT_BILL_SEARCH) || rights.includes(RIGHT_BILL_AMEND)) {
     // RIGHT_SEARCH is shared by HF & HQ staff)
     entries.push({
       text: formatMessage(intl, "invoice", "menu.bills"),
@@ -66,17 +79,30 @@ const LegalAndFinanceMainMenu = (props) => {
     });
   }
 
+  // Добавляем наш новый пункт меню "Genereaza factura"
+  const hasGenerateRights = rights.includes(RIGHT_BILL_SEARCH) || rights.includes(RIGHT_BILL_AMEND);
+
+  if (hasGenerateRights) {
+    entries.push({
+      text: formatMessage(intl, "invoice", "menu.generateInvoice"),
+      icon: <Assessment />,
+      route: "/invoices/generate-report",
+      id: "legalAndFinance.generateInvoice",
+    });
+  }
+
+  // Получаем contributions от других модулей
+  const contribs = modulesManager.getContribs(LEGAL_AND_FINANCE_MAIN_MENU_CONTRIBUTION_KEY);
   entries.push(
-    ...modulesManager
-      .getContribs(LEGAL_AND_FINANCE_MAIN_MENU_CONTRIBUTION_KEY)
-      .filter((c) => !c.filter || c.filter(rights)),
+    ...contribs.filter((c) => !c.filter || c.filter(rights)),
   );
 
-  if (!entries.length) return null;
-
+  if (!entries.length) {
+    return null;
+  }
   return (
-    <MainMenuContribution 
-      {...props} 
+    <MainMenuContribution
+      {...props}
       header={formatMessage(intl, "invoice", "mainMenu")}
       entries={entries}
       menuId="LegalAndFinanceMainMenu"

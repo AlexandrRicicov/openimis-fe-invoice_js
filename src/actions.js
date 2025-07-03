@@ -375,8 +375,8 @@ export function fetchBillPayments(params) {
 
 export function createBillPayment(billPayment, clientMutationLabel) {
   const mutation = formatMutation(
-    "createBillPayment", 
-    formatBillPaymentGQL(billPayment), 
+    "createBillPayment",
+    formatBillPaymentGQL(billPayment),
     clientMutationLabel
   );
   const requestedDateTime = new Date();
@@ -394,8 +394,8 @@ export function createBillPayment(billPayment, clientMutationLabel) {
 
 export function updateBillPayment(billPayment, clientMutationLabel) {
   const mutation = formatMutation(
-    "updateBillPayment", 
-    formatBillPaymentGQL(billPayment), 
+    "updateBillPayment",
+    formatBillPaymentGQL(billPayment),
     clientMutationLabel
   );
   const requestedDateTime = new Date();
@@ -434,8 +434,8 @@ export function fetchBillEvents(params) {
 
 export function createBillEventType(billEvent, clientMutationLabel) {
   const mutation = formatMutation(
-    "createBillEventType", 
-    formatBillEventMessageGQL(billEvent), 
+    "createBillEventType",
+    formatBillEventMessageGQL(billEvent),
     clientMutationLabel
   );
   const requestedDateTime = new Date();
@@ -464,8 +464,8 @@ export function fetchDetailPaymentInvoices(params) {
 
 export function createPaymentInvoiceWithDetail(paymentInvoice, subjectId, subjectType, clientMutationLabel) {
   const mutation = formatMutation(
-    "createPaymentWithDetailInvoice", 
-    formatPaymentInvoiceGQL(paymentInvoice, subjectId, subjectType), 
+    "createPaymentWithDetailInvoice",
+    formatPaymentInvoiceGQL(paymentInvoice, subjectId, subjectType),
     clientMutationLabel
   );
   const requestedDateTime = new Date();
@@ -490,6 +490,22 @@ export function deletePaymentInvoice(paymentInvoice, clientMutationLabel) {
     [REQUEST(ACTION_TYPE.MUTATION), SUCCESS(ACTION_TYPE.DELETE_PAYMENT_INVOICE), ERROR(ACTION_TYPE.MUTATION)],
     {
       actionType: ACTION_TYPE.DELETE_PAYMENT_INVOICE,
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+    },
+  );
+}
+
+export function createMonthBill(month, economicUnitCode, clientMutationLabel) {
+  const mutationInput = `month: ${month}, economicUnitCode: "${economicUnitCode}"`;
+  const mutation = formatMutation("createMonthBill", mutationInput, clientMutationLabel);
+  const requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    [REQUEST(ACTION_TYPE.MUTATION), SUCCESS(ACTION_TYPE.CREATE_MONTH_BILL), ERROR(ACTION_TYPE.MUTATION)],
+    {
+      actionType: ACTION_TYPE.CREATE_MONTH_BILL,
       clientMutationId: mutation.clientMutationId,
       clientMutationLabel,
       requestedDateTime,

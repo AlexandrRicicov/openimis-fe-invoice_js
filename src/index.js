@@ -1,5 +1,5 @@
 import React from "react";
-import { DoubleArrow } from "@material-ui/icons";
+import { DoubleArrow, Assessment } from "@material-ui/icons";
 import { FormattedMessage } from "@openimis/fe-core";
 import messages_en from "./translations/en.json";
 import reducer from "./reducer";
@@ -13,6 +13,7 @@ import ThirdPartyTypePickerBill from "./pickers/ThirdPartyTypePickerBill";
 import InvoicePage from "./pages/InvoicePage";
 import BillsPage from "./pages/BillsPage";
 import BillPage from "./pages/BillPage";
+import GenerateInvoiceReportPage from "./pages/GenerateInvoiceReportPage";
 import { InvoiceLineItemsTabLabel, InvoiceLineItemsTabPanel } from "./components/InvoiceLineItemsTab";
 import { InvoicePaymentsTabLabel, InvoicePaymentsTabPanel } from "./components/InvoicePaymentsTab";
 import { InvoiceEventsTabLabel, InvoiceEventsTabPanel } from "./components/InvoiceEventsTab";
@@ -32,6 +33,7 @@ const ROUTE_INVOICES = "invoices";
 const ROUTE_INVOICE = "invoices/invoice";
 const ROUTE_BILLS = "bills";
 const ROUTE_BILL = "bills/bill";
+const ROUTE_GENERATE_INVOICE_REPORT = "invoices/generate-report";
 
 const DEFAULT_CONFIG = {
   "translations": [{ key: "en", messages: flatten(messages_en) }],
@@ -45,6 +47,11 @@ const DEFAULT_CONFIG = {
     { path: ROUTE_INVOICE + "/:invoice_uuid?", component: InvoicePage },
     { path: ROUTE_BILLS, component: BillsPage },
     { path: ROUTE_BILL + "/:bill_uuid?", component: BillPage },
+    {
+      path: ROUTE_GENERATE_INVOICE_REPORT,
+      component: GenerateInvoiceReportPage,
+      // requiredRights: [RIGHT_BILL_SEARCH]
+    },
   ],
   "refs": [
     { key: "invoice.route.invoice", ref: ROUTE_INVOICE },
@@ -59,22 +66,8 @@ const DEFAULT_CONFIG = {
   "invoice.TabPanel.panel": [InvoiceLineItemsTabPanel, InvoicePaymentsTabPanel, InvoiceEventsTabPanel],
   "bill.TabPanel.label": [BillLineItemsTabLabel, BillPaymentsTabLabel, BillEventsTabLabel],
   "bill.TabPanel.panel": [BillLineItemsTabPanel, BillPaymentsTabPanel, BillEventsTabPanel],
-  "invoice.MainMenu": [
-    {
-      text: <FormattedMessage module="invoice" id="menu.invoices" />,
-      icon: <DoubleArrow />,
-      route: "/invoices",
-      id: "legalAndFinance.invoices",
-      filter: (rights) => rights.filter((r) => r >= RIGHT_INVOICE_SEARCH && r <= RIGHT_INVOICE_AMEND).length > 0,
-    },
-    {
-      text: <FormattedMessage module="invoice" id="menu.bills" />,
-      icon: <DoubleArrowFlipped />,
-      route: "/bills",
-      id: "legalAndFinance.bills",
-      filter: (rights) => rights.filter((r) => r >= RIGHT_BILL_SEARCH && r <= RIGHT_BILL_AMEND).length > 0,
-    }
-  ],
+  // Убираем "invoice.MainMenu" так как теперь пункт меню добавляется из модуля payment
+  // "invoice.MainMenu": [...]
 };
 
 export const InvoiceModule = (cfg) => {
